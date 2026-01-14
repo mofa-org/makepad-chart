@@ -1,0 +1,21 @@
+[package]
+name = "makepad-charts"
+version = "0.1.0"
+edition = "2021"
+description = "GPU-accelerated charting library for Makepad"
+license = "MIT"
+authors = ["Makepad Charts Contributors"]
+keywords = ["charts", "visualization", "makepad", "gpu", "ui"]
+categories = ["visualization", "gui", "graphics"]
+
+[dependencies]
+makepad-widgets = { git = "https://github.com/makepad/makepad", branch = "main" }
+
+[features]
+default = []
+
+[dev-dependencies]
+
+[[example]]
+name = "chart_zoo"
+path = "examples/chart_zoo.rs"
