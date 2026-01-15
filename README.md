@@ -2,12 +2,12 @@
 
 GPU-accelerated charting library for [Makepad](https://github.com/makepad/makepad) with ~75% Chart.js parity.
 
-![Chart Zoo](https://img.shields.io/badge/Charts-10%20Types-blue)
+![Chart Zoo](https://img.shields.io/badge/Charts-11%20Types-blue)
 ![Platform](https://img.shields.io/badge/Platform-Cross--Platform-green)
 
 ## Features
 
-- **10 Chart Types**: Bar, Line, Pie, Doughnut, Scatter, Bubble, Radar, Polar Area, Combo, Horizontal Bar
+- **11 Chart Types**: Bar, Line, Pie, Doughnut, Scatter, Bubble, Radar, Polar Area, Combo, Horizontal Bar, Chord
 - **GPU Accelerated**: All rendering done via Makepad's GPU shader system
 - **Animations**: Smooth animations with 28 easing functions + delay animation + progressive animation
 - **Gradients**: Vertical, radial, and angular gradients for all chart types
@@ -176,6 +176,28 @@ chart.set_dataset_types(vec![DatasetType::Bar, DatasetType::Line]);
 ```rust
 use makepad_charts::chart::horizontal_bar_chart::HorizontalBarChart;
 // Horizontal bars with Y-axis categories
+```
+
+### Chord Diagram
+```rust
+use makepad_charts::chart::chord_chart::{ChordChart, ChordData};
+
+// Matrix-based relationship data
+let data = ChordData::new()
+    .with_labels(vec!["A", "B", "C", "D"])
+    .with_matrix(vec![
+        vec![0.0, 50.0, 30.0, 10.0],  // Flow from A to B, C, D
+        vec![20.0, 0.0, 40.0, 15.0],  // Flow from B to A, C, D
+        vec![10.0, 25.0, 0.0, 35.0],  // Flow from C to A, B, D
+        vec![5.0, 10.0, 20.0, 0.0],   // Flow from D to A, B, C
+    ]);
+
+chart.set_data(data);
+chart.set_gradient(true);      // Gradient ribbons
+chart.set_directed(true);      // Arrow-like directed ribbons
+chart.set_arc_gradient(true);  // Gradient on outer arcs
+chart.set_gap_angle(0.05);     // Gap between groups
+chart.set_arc_thickness(0.08); // Outer arc thickness
 ```
 
 ## Animation

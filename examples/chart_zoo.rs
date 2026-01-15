@@ -9,6 +9,7 @@ use makepad_charts::chart::polar_area_chart::PolarAreaChart;
 use makepad_charts::chart::bubble_chart::BubbleChart;
 use makepad_charts::chart::horizontal_bar_chart::HorizontalBarChart;
 use makepad_charts::chart::combo_chart::{ComboChart, DatasetType};
+use makepad_charts::chart::chord_chart::{ChordChart, ChordData};
 
 live_design! {
     use link::theme::*;
@@ -24,6 +25,7 @@ live_design! {
     use makepad_charts::chart::bubble_chart::BubbleChart;
     use makepad_charts::chart::horizontal_bar_chart::HorizontalBarChart;
     use makepad_charts::chart::combo_chart::ComboChart;
+    use makepad_charts::chart::chord_chart::ChordChart;
 
     FONT_MANROPE = {
         font_family: {
@@ -223,6 +225,27 @@ live_design! {
                             combo_chart = <ComboChart> { width: Fill, height: Fill }
                             <ChartTitle> { label = { label = { text: "Combo Chart" } } }
                         }
+                    }
+
+                    // Row 3: Chord, Horizontal Bar
+                    <View> {
+                        width: Fill,
+                        height: Fit,
+                        flow: Right,
+                        spacing: 0,
+
+                        chord_card = <ChartCard> {
+                            chord_chart = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Chord Diagram" } } }
+                        }
+
+                        horizontal_bar_card = <ChartCard> {
+                            horizontal_bar_chart = <HorizontalBarChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Horizontal Bar" } } }
+                        }
+
+                        <View> { width: Fill, height: Fill }
+                        <View> { width: Fill, height: Fill }
                     }
 
                     // Footer
@@ -820,6 +843,83 @@ live_design! {
                         <View> { width: Fill, height: Fill }
                     }
                 }
+
+                // Detail Page - Chord Diagram
+                chord_detail_page = <ScrollXYView> {
+                    visible: false,
+                    flow: Down,
+                    spacing: 0,
+                    padding: 20,
+
+                    <View> {
+                        width: Fill,
+                        height: Fit,
+                        flow: Right,
+                        spacing: 20,
+                        margin: {bottom: 20},
+                        align: {y: 0.5},
+
+                        back_button_chord = <BackButton> {}
+                        <Label> {
+                            text: "Chord Diagram Variations"
+                            draw_text: {
+                                color: #333333,
+                                text_style: <FONT_MANROPE> { font_size: 24.0 }
+                            }
+                        }
+                    }
+
+                    <View> {
+                        width: Fill, height: Fit, flow: Right, spacing: 0,
+
+                        <DetailChartCard> {
+                            detail_chord_basic = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Basic Chord" } } }
+                        }
+                        <DetailChartCard> {
+                            detail_chord_gradient = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Gradient Ribbons" } } }
+                        }
+                        <DetailChartCard> {
+                            detail_chord_directed = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Directed (Arrows)" } } }
+                        }
+                    }
+
+                    <View> {
+                        width: Fill, height: Fit, flow: Right, spacing: 0,
+
+                        <DetailChartCard> {
+                            detail_chord_arc_gradient = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Arc Gradient" } } }
+                        }
+                        <DetailChartCard> {
+                            detail_chord_directed_gradient = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Directed + Gradient" } } }
+                        }
+                        <DetailChartCard> {
+                            detail_chord_thin_arcs = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Thin Arcs" } } }
+                        }
+                    }
+
+                    <View> {
+                        width: Fill, height: Fit, flow: Right, spacing: 0,
+
+                        <DetailChartCard> {
+                            detail_chord_wide_gap = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Wide Gap" } } }
+                        }
+                        <DetailChartCard> {
+                            detail_chord_bounce = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Bounce Animation" } } }
+                        }
+                        <DetailChartCard> {
+                            detail_chord_elastic = <ChordChart> { width: Fill, height: Fill }
+                            <ChartTitle> { label = { label = { text: "Elastic Animation" } } }
+                        }
+                    }
+                }
             }
         }
     }
@@ -837,6 +937,7 @@ pub enum CurrentPage {
     PolarDetail,
     BubbleDetail,
     ComboDetail,
+    ChordDetail,
 }
 
 #[derive(Live, LiveHook)]
@@ -931,7 +1032,13 @@ impl MatchEvent for App {
                 }
             }
         }
-
+        if self.ui.view(id!(chord_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(id!(chord_chart)).borrow_mut::<ChordChart>() {
+                if !chart.is_animating() {
+                    chart.replay_animation(cx);
+                }
+            }
+        }
         // Handle chart card clicks
         if self.ui.view(id!(line_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::LineDetail);
@@ -956,6 +1063,9 @@ impl MatchEvent for App {
         }
         if self.ui.view(id!(combo_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::ComboDetail);
+        }
+        if self.ui.view(id!(chord_card)).finger_up(actions).is_some() {
+            self.navigate_to(cx, CurrentPage::ChordDetail);
         }
 
         // Handle back buttons
@@ -983,6 +1093,9 @@ impl MatchEvent for App {
         if self.ui.button(id!(back_button_combo)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
+        if self.ui.button(id!(back_button_chord)).clicked(actions) {
+            self.navigate_to(cx, CurrentPage::Main);
+        }
     }
 }
 
@@ -1007,6 +1120,7 @@ impl App {
         self.ui.view(id!(polar_detail_page)).set_visible(cx, false);
         self.ui.view(id!(bubble_detail_page)).set_visible(cx, false);
         self.ui.view(id!(combo_detail_page)).set_visible(cx, false);
+        self.ui.view(id!(chord_detail_page)).set_visible(cx, false);
 
         // Show selected page and setup its charts
         match page {
@@ -1044,6 +1158,10 @@ impl App {
             CurrentPage::ComboDetail => {
                 self.ui.view(id!(combo_detail_page)).set_visible(cx, true);
                 self.setup_combo_detail_charts(cx);
+            }
+            CurrentPage::ChordDetail => {
+                self.ui.view(id!(chord_detail_page)).set_visible(cx, true);
+                self.setup_chord_detail_charts(cx);
             }
         }
 
@@ -1122,6 +1240,30 @@ impl App {
         if let Some(mut chart) = self.ui.widget(id!(combo_chart)).borrow_mut::<ComboChart>() {
             chart.set_data(combo_data);
             chart.set_dataset_types(vec![DatasetType::Bar, DatasetType::Line]);
+            chart.set_options(ChartOptions::new().with_begin_at_zero(true));
+        }
+
+        // Chord Diagram - relationship between 5 groups
+        let chord_data = ChordData::new()
+            .with_labels(vec!["Sales", "Marketing", "Engineering", "Support", "Finance"])
+            .with_matrix(vec![
+                vec![0.0, 80.0, 30.0, 50.0, 20.0],    // Sales flows to others
+                vec![40.0, 0.0, 60.0, 30.0, 10.0],    // Marketing flows to others
+                vec![20.0, 50.0, 0.0, 70.0, 40.0],    // Engineering flows to others
+                vec![60.0, 20.0, 40.0, 0.0, 30.0],    // Support flows to others
+                vec![30.0, 15.0, 25.0, 20.0, 0.0],    // Finance flows to others
+            ]);
+        if let Some(mut chart) = self.ui.widget(id!(chord_chart)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data);
+            chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
+        }
+
+        // Horizontal Bar Chart
+        let horizontal_data = ChartData::new()
+            .with_labels(vec!["Jan", "Feb", "Mar", "Apr", "May", "Jun"])
+            .add_dataset(Dataset::new("Sales").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 72.0]));
+        if let Some(mut chart) = self.ui.widget(id!(horizontal_bar_chart)).borrow_mut::<HorizontalBarChart>() {
+            chart.set_data(horizontal_data);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
         }
 
@@ -1948,6 +2090,100 @@ impl App {
             chart.set_dataset_types(vec![DatasetType::Bar, DatasetType::Line]);
             chart.set_gradient(true);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
+            chart.replay_animation(cx);
+        }
+
+        self.ui.redraw(cx);
+    }
+
+    fn setup_chord_detail_charts(&mut self, cx: &mut Cx) {
+        // Chord data - relationship matrix between 5 departments
+        let chord_data = ChordData::new()
+            .with_labels(vec!["Sales", "Marketing", "Engineering", "Support", "Finance"])
+            .with_matrix(vec![
+                vec![0.0, 80.0, 30.0, 50.0, 20.0],
+                vec![40.0, 0.0, 60.0, 30.0, 10.0],
+                vec![20.0, 50.0, 0.0, 70.0, 40.0],
+                vec![60.0, 20.0, 40.0, 0.0, 30.0],
+                vec![30.0, 15.0, 25.0, 20.0, 0.0],
+            ]);
+
+        // Basic Chord
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_basic)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
+            chart.replay_animation(cx);
+        }
+
+        // Gradient Ribbons
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_gradient)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_gradient(true);
+            chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
+            chart.replay_animation(cx);
+        }
+
+        // Directed (Arrows)
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_directed)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_directed(true);
+            chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
+            chart.replay_animation(cx);
+        }
+
+        // Arc Gradient
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_arc_gradient)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_arc_gradient(true);
+            chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
+            chart.replay_animation(cx);
+        }
+
+        // Directed + Gradient (Full effects)
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_directed_gradient)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_directed(true);
+            chart.set_gradient(true);
+            chart.set_arc_gradient(true);
+            chart.set_options(ChartOptions::new().with_animation_duration(1200.0));
+            chart.replay_animation(cx);
+        }
+
+        // Thin Arcs
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_thin_arcs)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_arc_thickness(0.03);
+            chart.set_gradient(true);
+            chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
+            chart.replay_animation(cx);
+        }
+
+        // Wide Gap
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_wide_gap)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_gap_angle(0.12);
+            chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
+            chart.replay_animation(cx);
+        }
+
+        // Bounce Animation
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_bounce)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_gradient(true);
+            chart.set_options(ChartOptions::new()
+                .with_animation_duration(1500.0)
+                .with_animation_easing(EasingType::EaseOutBounce));
+            chart.replay_animation(cx);
+        }
+
+        // Elastic Animation
+        if let Some(mut chart) = self.ui.widget(id!(detail_chord_elastic)).borrow_mut::<ChordChart>() {
+            chart.set_data(chord_data.clone());
+            chart.set_directed(true);
+            chart.set_gradient(true);
+            chart.set_options(ChartOptions::new()
+                .with_animation_duration(2000.0)
+                .with_animation_easing(EasingType::EaseOutElastic));
             chart.replay_animation(cx);
         }
 
