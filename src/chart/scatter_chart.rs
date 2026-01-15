@@ -57,6 +57,10 @@ pub struct ScatterChart {
     /// Hovered point info (dataset_idx, point_idx)
     #[rust((-1, -1))]
     hovered_point: (i32, i32),
+
+    /// Enable radial gradient for points (center to edge)
+    #[rust(false)]
+    gradient_enabled: bool,
 }
 
 impl Widget for ScatterChart {
@@ -76,7 +80,12 @@ impl Widget for ScatterChart {
                     if self.animator.update(time) {
                         self.redraw(cx);
                     }
+                    // Keep requesting frames while animation is running
+                    cx.new_next_frame();
                 }
+            }
+            Event::WindowGeomChange(_) => {
+                self.redraw(cx);
             }
             _ => {}
         }
@@ -132,6 +141,11 @@ impl ScatterChart {
         self.point_style = style;
     }
 
+    /// Enable radial gradient for points (center to edge)
+    pub fn set_gradient(&mut self, enabled: bool) {
+        self.gradient_enabled = enabled;
+    }
+
     fn setup_coord_from_data(&mut self) {
         // Scatter charts use linear scales for both axes
         self.coord = CartesianCoord::new()
@@ -166,6 +180,29 @@ impl ScatterChart {
             .with_easing(self.options.animation.easing);
         self.animator.start(time);
         cx.new_next_frame();
+    }
+
+    /// Replay the animation from the beginning
+    pub fn replay_animation(&mut self, cx: &mut Cx) {
+        // Reset animation state
+        self.initialized = false;
+        self.animator.reset();
+
+        // Start animation
+        let time = cx.seconds_since_app_start();
+        self.animator = ChartAnimator::new(self.options.animation.duration)
+            .with_easing(self.options.animation.easing);
+        self.animator.start(time);
+        self.initialized = true;
+
+        // Trigger redraw to start animation
+        cx.new_next_frame();
+        self.redraw(cx);
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        self.animator.is_running()
     }
 
     fn draw_background(&mut self, _cx: &mut Cx2d, _rect: Rect) {
@@ -247,11 +284,21 @@ impl ScatterChart {
                     animated_radius
                 };
 
-                self.draw_point.color = if is_hovered {
+                let color = if is_hovered {
                     lighten(base_color, 0.15)
                 } else {
                     base_color
                 };
+
+                self.draw_point.color = color;
+
+                // Apply gradient if enabled
+                if self.gradient_enabled {
+                    let lighter = lighten(color, 0.4);
+                    self.draw_point.set_radial_gradient(lighter, color);
+                } else {
+                    self.draw_point.disable_gradient();
+                }
 
                 let rect = Rect {
                     pos: dvec2(px - radius, py - radius),
@@ -325,15 +372,35 @@ impl ScatterChartRef {
         }
     }
 
+    pub fn replay_animation(&self, cx: &mut Cx) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.replay_animation(cx);
+        }
+    }
+
     pub fn set_point_style(&self, style: PointStyle) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.set_point_style(style);
         }
     }
 
+    pub fn set_gradient(&self, enabled: bool) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.set_gradient(enabled);
+        }
+    }
+
     pub fn redraw(&self, cx: &mut Cx) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.redraw(cx);
+        }
+    }
+
+    pub fn is_animating(&self) -> bool {
+        if let Some(inner) = self.borrow() {
+            inner.is_animating()
+        } else {
+            false
         }
     }
 }

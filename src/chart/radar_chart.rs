@@ -55,7 +55,7 @@ pub struct RadarChart {
     #[rust]
     radius: f64,
 
-    #[rust(20.0)]
+    #[rust(0.0)]
     padding: f64,
 
     #[rust]
@@ -85,13 +85,22 @@ impl Widget for RadarChart {
     fn handle_event(&mut self, cx: &mut Cx, event: &Event, scope: &mut Scope) {
         self.view.handle_event(cx, event, scope);
 
-        if let Event::NextFrame(_) = event {
-            if self.animator.is_running() {
-                let time = cx.seconds_since_app_start();
-                if self.animator.update(time) {
-                    self.redraw(cx);
+        match event {
+            Event::NextFrame(_) => {
+                if self.animator.is_running() {
+                    let time = cx.seconds_since_app_start();
+                    if self.animator.update(time) {
+                        self.redraw(cx);
+                    }
+                    // Keep requesting frames while animation is running
+                    cx.new_next_frame();
                 }
             }
+            Event::WindowGeomChange(_) => {
+                // Force redraw on window resize
+                self.redraw(cx);
+            }
+            _ => {}
         }
     }
 
@@ -140,6 +149,13 @@ impl RadarChart {
         self.gradient_enabled = enabled;
     }
 
+    /// Set padding around the chart
+    pub fn set_padding(&mut self, padding: f64) {
+        self.padding = padding;
+        // Reset radius to force recalculation
+        self.radius = 0.0;
+    }
+
     fn update_layout(&mut self, rect: Rect) {
         let size = rect.size.x.min(rect.size.y) - self.padding * 2.0;
         self.radius = size / 2.0;
@@ -158,6 +174,29 @@ impl RadarChart {
             .with_easing(self.options.animation.easing);
         self.animator.start(time);
         cx.new_next_frame();
+    }
+
+    /// Replay the animation from the beginning
+    pub fn replay_animation(&mut self, cx: &mut Cx) {
+        // Reset animation state
+        self.initialized = false;
+        self.animator.reset();
+
+        // Start animation
+        let time = cx.seconds_since_app_start();
+        self.animator = ChartAnimator::new(self.options.animation.duration)
+            .with_easing(self.options.animation.easing);
+        self.animator.start(time);
+        self.initialized = true;
+
+        // Trigger redraw to start animation
+        cx.new_next_frame();
+        self.redraw(cx);
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        self.animator.is_running()
     }
 
     fn get_num_axes(&self) -> usize {
@@ -322,6 +361,12 @@ impl RadarChartRef {
         }
     }
 
+    pub fn replay_animation(&self, cx: &mut Cx) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.replay_animation(cx);
+        }
+    }
+
     pub fn set_fill(&self, show_fill: bool) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.set_fill(show_fill);
@@ -331,6 +376,20 @@ impl RadarChartRef {
     pub fn set_gradient(&self, enabled: bool) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.set_gradient(enabled);
+        }
+    }
+
+    pub fn set_padding(&self, padding: f64) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.set_padding(padding);
+        }
+    }
+
+    pub fn is_animating(&self) -> bool {
+        if let Some(inner) = self.borrow() {
+            inner.is_animating()
+        } else {
+            false
         }
     }
 }

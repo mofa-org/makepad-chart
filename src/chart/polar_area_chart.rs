@@ -44,11 +44,15 @@ pub struct PolarAreaChart {
     #[rust]
     max_radius: f64,
 
-    #[rust(20.0)]
+    #[rust(0.0)]
     padding: f64,
 
     #[rust(-1)]
     hovered_segment: i32,
+
+    /// Enable radial gradient (inner to outer)
+    #[rust(false)]
+    gradient_enabled: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -74,7 +78,13 @@ impl Widget for PolarAreaChart {
                     if self.animator.update(time) {
                         self.redraw(cx);
                     }
+                    // Keep requesting frames while animation is running
+                    cx.new_next_frame();
                 }
+            }
+            Event::WindowGeomChange(_) => {
+                // Force redraw on window resize
+                self.redraw(cx);
             }
             _ => {}
         }
@@ -109,6 +119,11 @@ impl PolarAreaChart {
         self.options = options;
     }
 
+    /// Enable radial gradient (inner to outer)
+    pub fn set_gradient(&mut self, enabled: bool) {
+        self.gradient_enabled = enabled;
+    }
+
     fn update_layout(&mut self, rect: Rect) {
         let size = rect.size.x.min(rect.size.y) - self.padding * 2.0;
         self.max_radius = size / 2.0;
@@ -124,6 +139,29 @@ impl PolarAreaChart {
             .with_easing(self.options.animation.easing);
         self.animator.start(time);
         cx.new_next_frame();
+    }
+
+    /// Replay the animation from the beginning
+    pub fn replay_animation(&mut self, cx: &mut Cx) {
+        // Reset animation state
+        self.initialized = false;
+        self.animator.reset();
+
+        // Start animation
+        let time = cx.seconds_since_app_start();
+        self.animator = ChartAnimator::new(self.options.animation.duration)
+            .with_easing(self.options.animation.easing);
+        self.animator.start(time);
+        self.initialized = true;
+
+        // Trigger redraw to start animation
+        cx.new_next_frame();
+        self.redraw(cx);
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        self.animator.is_running()
     }
 
     fn compute_segments(&self) -> Vec<SegmentInfo> {
@@ -176,12 +214,38 @@ impl PolarAreaChart {
     fn draw_segments(&mut self, cx: &mut Cx2d) {
         let progress = self.animator.get_progress();
         let segments = self.compute_segments();
+        let num_segments = segments.len();
+
+        if num_segments == 0 {
+            return;
+        }
 
         for (i, segment) in segments.iter().enumerate() {
             let is_hovered = self.hovered_segment >= 0 && self.hovered_segment as usize == i;
 
-            // Animate radius
-            let animated_radius = segment.radius_ratio * progress * self.max_radius;
+            // Sequential animation: each segment starts after the previous one
+            // Divide progress into num_segments parts with some overlap
+            let overlap = 0.3; // 30% overlap between segments
+            let segment_duration = 1.0 / (num_segments as f64 * (1.0 - overlap) + overlap);
+            let segment_start = i as f64 * segment_duration * (1.0 - overlap);
+            let segment_end = segment_start + segment_duration;
+
+            // Calculate this segment's local progress
+            let local_progress = if progress <= segment_start {
+                0.0
+            } else if progress >= segment_end {
+                1.0
+            } else {
+                (progress - segment_start) / (segment_end - segment_start)
+            };
+
+            // Skip if not yet started
+            if local_progress <= 0.0 {
+                continue;
+            }
+
+            // Animate radius from inside to outside
+            let animated_radius = segment.radius_ratio * local_progress * self.max_radius;
 
             if animated_radius < 1.0 {
                 continue;
@@ -194,11 +258,21 @@ impl PolarAreaChart {
                 animated_radius
             };
 
-            self.draw_arc.color = if is_hovered {
+            let color = if is_hovered {
                 lighten(segment.color, 0.1)
             } else {
                 segment.color
             };
+
+            self.draw_arc.color = color;
+
+            // Apply gradient if enabled
+            if self.gradient_enabled {
+                let inner_color = lighten(color, 0.4);
+                self.draw_arc.set_radial_gradient(inner_color, color);
+            } else {
+                self.draw_arc.disable_gradient();
+            }
 
             let sweep = segment.end_angle - segment.start_angle;
             self.draw_arc.set_arc(segment.start_angle, sweep, 0.0, draw_radius);
@@ -265,6 +339,26 @@ impl PolarAreaChartRef {
     pub fn set_options(&self, options: ChartOptions) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.set_options(options);
+        }
+    }
+
+    pub fn replay_animation(&self, cx: &mut Cx) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.replay_animation(cx);
+        }
+    }
+
+    pub fn set_gradient(&self, enabled: bool) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.set_gradient(enabled);
+        }
+    }
+
+    pub fn is_animating(&self) -> bool {
+        if let Some(inner) = self.borrow() {
+            inner.is_animating()
+        } else {
+            false
         }
     }
 }

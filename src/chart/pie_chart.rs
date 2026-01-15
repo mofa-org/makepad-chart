@@ -98,7 +98,12 @@ impl Widget for PieChart {
                     if self.animator.update(time) {
                         self.redraw(cx);
                     }
+                    // Keep requesting frames while animation is running
+                    cx.new_next_frame();
                 }
+            }
+            Event::WindowGeomChange(_) => {
+                self.redraw(cx);
             }
             _ => {}
         }
@@ -226,6 +231,32 @@ impl PieChart {
             .with_easing(self.options.animation.easing);
         self.animator.start(time);
         cx.new_next_frame();
+    }
+
+    /// Replay the animation from the beginning
+    pub fn replay_animation(&mut self, cx: &mut Cx) {
+        // Reset animation state
+        self.initialized = false;
+        self.animator.reset();
+
+        // Compute slices before starting animation (critical for pie chart!)
+        self.compute_slices();
+
+        // Start animation
+        let time = cx.seconds_since_app_start();
+        self.animator = ChartAnimator::new(self.options.animation.duration)
+            .with_easing(self.options.animation.easing);
+        self.animator.start(time);
+        self.initialized = true;
+
+        // Trigger redraw to start animation
+        cx.new_next_frame();
+        self.redraw(cx);
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        self.animator.is_running()
     }
 
     fn draw_background(&mut self, _cx: &mut Cx2d, _rect: Rect) {
@@ -377,6 +408,12 @@ impl PieChartRef {
         }
     }
 
+    pub fn replay_animation(&self, cx: &mut Cx) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.replay_animation(cx);
+        }
+    }
+
     pub fn disable_gradient(&self) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.disable_gradient();
@@ -386,6 +423,14 @@ impl PieChartRef {
     pub fn redraw(&self, cx: &mut Cx) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.redraw(cx);
+        }
+    }
+
+    pub fn is_animating(&self) -> bool {
+        if let Some(inner) = self.borrow() {
+            inner.is_animating()
+        } else {
+            false
         }
     }
 }

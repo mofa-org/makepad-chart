@@ -32,11 +32,18 @@ live_design! {
             if u >= 0.0 && v >= 0.0 && (u + v) <= 1.0 {
                 // Calculate final color with gradient support
                 if self.gradient_enabled > 0.5 {
-                    // Radial gradient: v0 is center, v1/v2 are edges
-                    // Barycentric weight at v0 is (1 - u - v)
-                    let center_weight = 1.0 - u - v;
-                    let final_color = mix(self.gradient_outer_color, self.gradient_center_color, center_weight);
-                    return vec4(final_color.rgb * final_color.a, final_color.a);
+                    if self.gradient_type < 0.5 {
+                        // Radial gradient: v0 is center, v1/v2 are edges
+                        // Barycentric weight at v0 is (1 - u - v)
+                        let center_weight = 1.0 - u - v;
+                        let final_color = mix(self.gradient_outer_color, self.gradient_center_color, center_weight);
+                        return vec4(final_color.rgb * final_color.a, final_color.a);
+                    } else {
+                        // Vertical gradient: top to bottom based on Y position
+                        let t = p.y; // UV y position (0 = top, 1 = bottom)
+                        let final_color = mix(self.gradient_center_color, self.gradient_outer_color, t);
+                        return vec4(final_color.rgb * final_color.a, final_color.a);
+                    }
                 }
                 return vec4(self.color.rgb * self.color.a, self.color.a);
             }
@@ -59,9 +66,11 @@ pub struct DrawTriangle {
     #[live] pub v2y: f32,
     /// Gradient enabled (0.0 = no, 1.0 = yes)
     #[live(0.0)] pub gradient_enabled: f32,
-    /// Center color for radial gradient (at v0)
+    /// Gradient type (0.0 = radial, 1.0 = vertical)
+    #[live(0.0)] pub gradient_type: f32,
+    /// Center/top color for gradient
     #[live] pub gradient_center_color: Vec4,
-    /// Outer color for radial gradient (at v1, v2)
+    /// Outer/bottom color for gradient
     #[live] pub gradient_outer_color: Vec4,
 }
 
@@ -99,8 +108,17 @@ impl DrawTriangle {
     /// Enable radial gradient (center color at v0, outer color at v1/v2)
     pub fn set_radial_gradient(&mut self, center_color: Vec4, outer_color: Vec4) {
         self.gradient_enabled = 1.0;
+        self.gradient_type = 0.0;
         self.gradient_center_color = center_color;
         self.gradient_outer_color = outer_color;
+    }
+
+    /// Enable vertical gradient (top to bottom)
+    pub fn set_vertical_gradient(&mut self, top_color: Vec4, bottom_color: Vec4) {
+        self.gradient_enabled = 1.0;
+        self.gradient_type = 1.0;
+        self.gradient_center_color = top_color;
+        self.gradient_outer_color = bottom_color;
     }
 
     /// Disable gradient (use solid color)

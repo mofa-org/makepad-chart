@@ -89,6 +89,12 @@ impl ChartOptions {
         self
     }
 
+    /// Set animation easing function
+    pub fn with_animation_easing(mut self, easing: EasingType) -> Self {
+        self.animation.easing = easing;
+        self
+    }
+
     /// Disable animations
     pub fn without_animation(mut self) -> Self {
         self.animation.duration = 0.0;

@@ -57,6 +57,10 @@ pub struct BubbleChart {
 
     #[rust(-1)]
     hovered_dataset: i32,
+
+    /// Enable radial gradient for bubbles (center to edge)
+    #[rust(false)]
+    gradient_enabled: bool,
 }
 
 impl Widget for BubbleChart {
@@ -73,7 +77,12 @@ impl Widget for BubbleChart {
                     if self.animator.update(time) {
                         self.redraw(cx);
                     }
+                    // Keep requesting frames while animation is running
+                    cx.new_next_frame();
                 }
+            }
+            Event::WindowGeomChange(_) => {
+                self.redraw(cx);
             }
             _ => {}
         }
@@ -118,6 +127,11 @@ impl BubbleChart {
     pub fn set_radius_range(&mut self, min: f64, max: f64) {
         self.min_radius = min;
         self.max_radius = max;
+    }
+
+    /// Enable radial gradient for bubbles (center to edge)
+    pub fn set_gradient(&mut self, enabled: bool) {
+        self.gradient_enabled = enabled;
     }
 
     fn setup_coord_from_data(&mut self) {
@@ -169,6 +183,29 @@ impl BubbleChart {
             .with_easing(self.options.animation.easing);
         self.animator.start(time);
         cx.new_next_frame();
+    }
+
+    /// Replay the animation from the beginning
+    pub fn replay_animation(&mut self, cx: &mut Cx) {
+        // Reset animation state
+        self.initialized = false;
+        self.animator.reset();
+
+        // Start animation
+        let time = cx.seconds_since_app_start();
+        self.animator = ChartAnimator::new(self.options.animation.duration)
+            .with_easing(self.options.animation.easing);
+        self.animator.start(time);
+        self.initialized = true;
+
+        // Trigger redraw to start animation
+        cx.new_next_frame();
+        self.redraw(cx);
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        self.animator.is_running()
     }
 
     fn draw_grid_lines(&mut self, cx: &mut Cx2d) {
@@ -238,6 +275,9 @@ impl BubbleChart {
             .map(|p| p.r.unwrap_or(1.0))
             .fold(0.0f64, |a, b| a.max(b));
 
+        // Get chart area for animation offset calculation
+        let area = self.coord.chart_area();
+
         for (dataset_idx, dataset) in self.data.datasets.iter().enumerate() {
             let color = dataset.background_color.unwrap_or_else(|| {
                 let mut c = get_color(dataset_idx);
@@ -248,10 +288,16 @@ impl BubbleChart {
             for (point_idx, point) in dataset.data.iter().enumerate() {
                 let x_val = point.x.unwrap_or(point_idx as f64);
                 let x = self.coord.x_scale().get_pixel_for_value(x_val);
-                let y = self.coord.y_scale().get_pixel_for_value(point.y);
+                let final_y = self.coord.y_scale().get_pixel_for_value(point.y);
+
+                // Animate Y position: start from below and rise up to final position
+                // Bubbles start at bottom of chart and rise to their final position
+                let start_y = area.bottom + 50.0; // Start below the chart
+                let y = start_y + (final_y - start_y) * progress;
 
                 let r_value = point.r.unwrap_or(1.0);
                 let base_radius = self.get_bubble_radius(r_value, max_r);
+                // Radius grows as bubble rises
                 let radius = base_radius * progress;
 
                 let is_hovered = self.hovered_dataset == dataset_idx as i32
@@ -259,11 +305,21 @@ impl BubbleChart {
 
                 let draw_radius = if is_hovered { radius * 1.1 } else { radius };
 
-                self.draw_point.color = if is_hovered {
+                let draw_color = if is_hovered {
                     lighten(color, 0.1)
                 } else {
                     color
                 };
+
+                self.draw_point.color = draw_color;
+
+                // Apply gradient if enabled
+                if self.gradient_enabled {
+                    let lighter = lighten(draw_color, 0.4);
+                    self.draw_point.set_radial_gradient(lighter, draw_color);
+                } else {
+                    self.draw_point.disable_gradient();
+                }
 
                 let rect = Rect {
                     pos: dvec2(x - draw_radius, y - draw_radius),
@@ -332,6 +388,26 @@ impl BubbleChartRef {
     pub fn set_options(&self, options: ChartOptions) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.set_options(options);
+        }
+    }
+
+    pub fn replay_animation(&self, cx: &mut Cx) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.replay_animation(cx);
+        }
+    }
+
+    pub fn set_gradient(&self, enabled: bool) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.set_gradient(enabled);
+        }
+    }
+
+    pub fn is_animating(&self) -> bool {
+        if let Some(inner) = self.borrow() {
+            inner.is_animating()
+        } else {
+            false
         }
     }
 }

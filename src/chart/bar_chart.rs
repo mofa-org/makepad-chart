@@ -73,6 +73,10 @@ pub struct BarChart {
     /// Delay per dataset in ms (default 50ms)
     #[rust(50.0)]
     delay_per_dataset: f64,
+
+    /// Enable vertical gradient (bottom to top)
+    #[rust(false)]
+    gradient_enabled: bool,
 }
 
 impl Widget for BarChart {
@@ -188,6 +192,11 @@ impl BarChart {
         self.delay_per_dataset = per_dataset;
     }
 
+    /// Enable vertical gradient (bottom to top)
+    pub fn set_gradient(&mut self, enabled: bool) {
+        self.gradient_enabled = enabled;
+    }
+
     /// Replay the animation from the beginning
     pub fn replay_animation(&mut self, cx: &mut Cx) {
         // Reset state
@@ -224,6 +233,15 @@ impl BarChart {
 
         cx.new_next_frame();
         self.redraw(cx);
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        if self.delay_animation {
+            self.bar_animators.iter().any(|a| a.is_running())
+        } else {
+            self.animator.is_running()
+        }
     }
 
     fn setup_coord_from_data(&mut self) {
@@ -363,6 +381,14 @@ impl BarChart {
                     let color = dataset.background_color.unwrap_or_else(|| get_color(dataset_idx));
                     self.draw_bar.color = color;
 
+                    // Apply gradient if enabled
+                    if self.gradient_enabled {
+                        let lighter = lighten(color, 0.3);
+                        self.draw_bar.set_vertical_gradient(color, lighter);
+                    } else {
+                        self.draw_bar.disable_gradient();
+                    }
+
                     if let Some(point) = dataset.data.get(data_idx) {
                         let progress = self.get_bar_progress(dataset_idx, data_idx);
                         let y_value = point.y.max(0.0) * progress;
@@ -402,6 +428,14 @@ impl BarChart {
                 let color = dataset.background_color.unwrap_or_else(|| get_color(dataset_idx));
                 self.draw_bar.color = color;
 
+                // Apply gradient if enabled
+                if self.gradient_enabled {
+                    let lighter = lighten(color, 0.3);
+                    self.draw_bar.set_vertical_gradient(color, lighter);
+                } else {
+                    self.draw_bar.disable_gradient();
+                }
+
                 let border_radius = 4.0;
                 self.draw_bar.set_top_radius(border_radius);
 
@@ -439,7 +473,12 @@ impl BarChart {
 
                     if is_hovered {
                         // Slightly brighter on hover
-                        self.draw_bar.color = lighten(color, 0.15);
+                        let hover_color = lighten(color, 0.15);
+                        self.draw_bar.color = hover_color;
+                        if self.gradient_enabled {
+                            let lighter = lighten(hover_color, 0.3);
+                            self.draw_bar.set_vertical_gradient(hover_color, lighter);
+                        }
                     } else {
                         self.draw_bar.color = color;
                     }
@@ -526,6 +565,13 @@ impl BarChartRef {
         }
     }
 
+    /// Enable vertical gradient (bottom to top)
+    pub fn set_gradient(&self, enabled: bool) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.set_gradient(enabled);
+        }
+    }
+
     /// Replay the animation from the beginning
     pub fn replay_animation(&self, cx: &mut Cx) {
         if let Some(mut inner) = self.borrow_mut() {
@@ -537,6 +583,15 @@ impl BarChartRef {
     pub fn redraw(&self, cx: &mut Cx) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.redraw(cx);
+        }
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        if let Some(inner) = self.borrow() {
+            inner.is_animating()
+        } else {
+            false
         }
     }
 }

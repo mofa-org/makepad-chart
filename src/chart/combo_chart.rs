@@ -70,19 +70,32 @@ pub struct ComboChart {
 
     #[rust]
     dataset_types: Vec<DatasetType>,
+
+    /// Enable gradient for bars (vertical gradient)
+    #[rust(false)]
+    gradient_enabled: bool,
 }
 
 impl Widget for ComboChart {
     fn handle_event(&mut self, cx: &mut Cx, event: &Event, scope: &mut Scope) {
         self.view.handle_event(cx, event, scope);
 
-        if let Event::NextFrame(_) = event {
-            if self.animator.is_running() {
-                let time = cx.seconds_since_app_start();
-                if self.animator.update(time) {
-                    self.redraw(cx);
+        match event {
+            Event::NextFrame(_) => {
+                if self.animator.is_running() {
+                    let time = cx.seconds_since_app_start();
+                    if self.animator.update(time) {
+                        self.redraw(cx);
+                    }
+                    // Keep requesting frames while animation is running
+                    cx.new_next_frame();
                 }
             }
+            Event::WindowGeomChange(_) => {
+                // Force redraw on window resize
+                self.redraw(cx);
+            }
+            _ => {}
         }
     }
 
@@ -90,6 +103,7 @@ impl Widget for ComboChart {
         self.view.draw_walk_all(cx, scope, walk);
 
         let rect = cx.turtle().rect();
+
         if rect.size.x > 0.0 && rect.size.y > 0.0 {
             self.update_coord(rect);
 
@@ -128,6 +142,11 @@ impl ComboChart {
         self.dataset_types = types;
     }
 
+    /// Enable gradient for bars
+    pub fn set_gradient(&mut self, enabled: bool) {
+        self.gradient_enabled = enabled;
+    }
+
     fn get_dataset_type(&self, idx: usize) -> DatasetType {
         self.dataset_types.get(idx).cloned().unwrap_or(DatasetType::Bar)
     }
@@ -163,6 +182,29 @@ impl ComboChart {
             .with_easing(self.options.animation.easing);
         self.animator.start(time);
         cx.new_next_frame();
+    }
+
+    /// Replay the animation from the beginning
+    pub fn replay_animation(&mut self, cx: &mut Cx) {
+        // Reset animation state
+        self.initialized = false;
+        self.animator.reset();
+
+        // Start animation
+        let time = cx.seconds_since_app_start();
+        self.animator = ChartAnimator::new(self.options.animation.duration)
+            .with_easing(self.options.animation.easing);
+        self.animator.start(time);
+        self.initialized = true;
+
+        // Trigger redraw to start animation
+        cx.new_next_frame();
+        self.redraw(cx);
+    }
+
+    /// Check if animation is currently running
+    pub fn is_animating(&self) -> bool {
+        self.animator.is_running()
     }
 
     fn draw_grid_lines(&mut self, cx: &mut Cx2d) {
@@ -215,6 +257,14 @@ impl ComboChart {
             let dataset = &self.data.datasets[dataset_idx];
             let color = dataset.background_color.unwrap_or_else(|| get_color(dataset_idx));
             self.draw_bar.color = color;
+
+            // Apply gradient if enabled
+            if self.gradient_enabled {
+                let lighter = lighten(color, 0.3);
+                self.draw_bar.set_vertical_gradient(color, lighter);
+            } else {
+                self.draw_bar.disable_gradient();
+            }
 
             for (data_idx, point) in dataset.data.iter().enumerate() {
                 let x_center = self.coord.x_scale().get_pixel_for_value(data_idx as f64);
@@ -301,9 +351,29 @@ impl ComboChartRef {
         }
     }
 
+    pub fn replay_animation(&self, cx: &mut Cx) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.replay_animation(cx);
+        }
+    }
+
     pub fn set_dataset_types(&self, types: Vec<DatasetType>) {
         if let Some(mut inner) = self.borrow_mut() {
             inner.set_dataset_types(types);
+        }
+    }
+
+    pub fn set_gradient(&self, enabled: bool) {
+        if let Some(mut inner) = self.borrow_mut() {
+            inner.set_gradient(enabled);
+        }
+    }
+
+    pub fn is_animating(&self) -> bool {
+        if let Some(inner) = self.borrow() {
+            inner.is_animating()
+        } else {
+            false
         }
     }
 }

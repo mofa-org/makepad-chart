@@ -74,6 +74,9 @@ impl Widget for HorizontalBarChart {
                     }
                 }
             }
+            Event::WindowGeomChange(_) => {
+                self.redraw(cx);
+            }
             _ => {}
         }
     }
@@ -154,6 +157,13 @@ impl HorizontalBarChart {
 
     fn update_coord(&mut self, rect: Rect) {
         self.coord.update(rect);
+
+        // For horizontal bar charts, categories on Y axis should go from top to bottom
+        // (first category at top, last at bottom), so we need to override the default
+        // Y scale pixel range which goes bottom to top
+        let top = self.coord.chart_area().top;
+        let bottom = self.coord.chart_area().bottom;
+        self.coord.y_scale_mut().set_pixel_range(top, bottom);
     }
 
     fn start_animation(&mut self, cx: &mut Cx) {

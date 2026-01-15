@@ -9,8 +9,11 @@ GPU-accelerated charting library for [Makepad](https://github.com/makepad/makepa
 
 - **10 Chart Types**: Bar, Line, Pie, Doughnut, Scatter, Bubble, Radar, Polar Area, Combo, Horizontal Bar
 - **GPU Accelerated**: All rendering done via Makepad's GPU shader system
-- **Animations**: Smooth animations with 28 easing functions + delay animation support
-- **Gradients**: Radial and angular gradients for Pie, Radar, and Doughnut charts
+- **Animations**: Smooth animations with 28 easing functions + delay animation + progressive animation
+- **Gradients**: Vertical, radial, and angular gradients for all chart types
+- **Progressive Animation**: Dense time-series with 1000+ points drawing left-to-right
+- **Chart Overlays**: Layer multiple chart types using absolute positioning
+- **Multi-Dataset Colors**: Color-coded datasets with custom color support
 - **Interactive**: Hover effects and click detection
 - **Cross-Platform**: Works on Desktop, Web (WASM), iOS, and Android
 
@@ -92,6 +95,7 @@ use makepad_charts::chart::bar_chart::BarChart;
 // Vertical bars, supports stacked and grouped modes
 chart.set_stacked(true);  // Enable stacking
 chart.set_delay_animation(true);  // Staggered animation
+chart.set_gradient(true);  // Vertical gradient on bars
 ```
 
 ### Line Chart
@@ -101,6 +105,8 @@ use makepad_charts::chart::line_chart::{LineChart, SteppedMode};
 chart.set_fill(true);  // Area chart
 chart.set_stepped(SteppedMode::After);  // Stepped line
 chart.set_show_points(true);  // Show data points
+chart.set_progressive_animation(true);  // Draw left-to-right
+chart.set_gradient(true);  // Enable area gradient
 ```
 
 ### Pie / Doughnut Chart
@@ -120,6 +126,8 @@ let data = ChartData::new()
         Dataset::new("Points")
             .with_xy_data(vec![(1.0, 2.0), (3.0, 4.0), (5.0, 6.0)])
     );
+
+chart.set_gradient(true);  // Radial gradient on points
 ```
 
 ### Bubble Chart
@@ -133,6 +141,8 @@ let data = ChartData::new()
                 (x, y, radius),  // Each point has x, y, and radius
             ])
     );
+
+chart.set_gradient(true);  // Radial gradient on bubbles
 ```
 
 ### Radar Chart
@@ -188,7 +198,63 @@ chart.set_delay_timing(80.0, 40.0);  // per_index_ms, per_dataset_ms
 chart.replay_animation(cx);
 ```
 
+### Progressive Animation (Dense Data)
+For time-series or stock market charts with 1000+ points:
+
+```rust
+// Enable progressive mode - draws points left-to-right
+chart.set_progressive_animation(true);
+chart.set_tension(0.1);  // Slight smoothing for dense data
+chart.set_show_points(false);  // Hide points for performance
+
+chart.set_options(ChartOptions::new()
+    .with_animation_duration(3000.0)
+    .with_animation_easing(EasingType::EaseOutCubic));
+```
+
+## Chart Overlays
+
+Layer multiple chart types using absolute positioning:
+
+```rust
+live_design! {
+    ChartOverlay = <View> {
+        width: Fill, height: 500,
+
+        // Base chart (renders first, behind)
+        bubble_chart = <BubbleChart> { width: Fill, height: Fill }
+
+        // Overlay chart (renders on top)
+        scatter_chart = <ScatterChart> {
+            width: Fill, height: Fill,
+            abs_pos: vec2(0.0, 0.0)
+        }
+    }
+}
+```
+
+Both charts should use the same `ChartOptions` for axis alignment.
+
 ## Gradients
+
+All chart types support GPU-accelerated gradients:
+
+### Bar Chart - Vertical Gradient
+```rust
+bar_chart.set_gradient(true);  // Bottom to top gradient
+```
+
+### Line Chart - Area Gradient
+```rust
+line_chart.set_fill(true);
+line_chart.set_gradient(true);  // Top to bottom gradient on fill
+```
+
+### Scatter/Bubble - Radial Gradient
+```rust
+scatter_chart.set_gradient(true);  // Center to edge gradient
+bubble_chart.set_gradient(true);   // Center to edge gradient
+```
 
 ### Pie/Doughnut Gradients
 ```rust
@@ -196,9 +262,10 @@ pie_chart.set_radial_gradient(true);   // Inner to outer
 pie_chart.set_angular_gradient(true);  // Along the arc
 ```
 
-### Radar Gradients
+### Radar/Polar Area Gradients
 ```rust
-radar_chart.set_gradient(true);  // Center to edges
+radar_chart.set_gradient(true);       // Center to edges
+polar_area_chart.set_gradient(true);  // Center to edges
 ```
 
 ## Data Structures
@@ -228,7 +295,18 @@ Dataset::new("Label").with_floating_data(vec![(-5.0, 10.0), (0.0, 15.0)])
 // Custom color
 Dataset::new("Label")
     .with_data(vec![1.0, 2.0])
-    .with_background_color(vec4(0.3, 0.5, 0.9, 1.0))
+    .with_color(vec4(0.3, 0.5, 0.9, 1.0))
+```
+
+### Multi-Dataset Color Coding
+```rust
+let data = ChartData::new()
+    .with_labels(labels)
+    .add_dataset(Dataset::new("MKPD").with_data(stock1))  // Default color
+    .add_dataset(Dataset::new("TECH").with_data(stock2)
+        .with_color(vec4(0.95, 0.5, 0.3, 1.0)))  // Orange
+    .add_dataset(Dataset::new("INDEX").with_data(stock3)
+        .with_color(vec4(0.4, 0.8, 0.5, 1.0)));  // Green
 ```
 
 ### ChartOptions
