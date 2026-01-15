@@ -17,6 +17,12 @@ GPU-accelerated charting library for [Makepad](https://github.com/makepad/makepa
 - **Interactive**: Hover effects and click detection
 - **Cross-Platform**: Works on Desktop, Web (WASM), iOS, and Android
 
+## Run Example
+
+```bash
+cargo run --example chart_zoo
+```
+
 ## Installation
 
 Add to your `Cargo.toml`:
@@ -315,12 +321,6 @@ ChartOptions::new()
     .with_begin_at_zero(true)
     .with_animation_duration(400.0)
     .with_animation_easing(EasingType::EaseOutQuart)
-```
-
-## Run Example
-
-```bash
-cargo run --example chart_zoo
 ```
 
 ## License
