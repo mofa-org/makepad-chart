@@ -1,5 +1,3 @@
-use makepad_widgets::*;
-
 /// Chart tooltip component
 #[derive(Clone, Debug, Default)]
 pub struct ChartTooltip {

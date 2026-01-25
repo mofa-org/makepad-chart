@@ -1,5 +1,3 @@
-use makepad_widgets::*;
-
 /// Chart axis component for rendering axis lines and labels
 #[derive(Clone, Debug, Default)]
 pub struct ChartAxis {

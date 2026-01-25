@@ -74,7 +74,7 @@ impl Widget for ChartLegend {
 
     fn draw_walk(&mut self, cx: &mut Cx2d, _scope: &mut Scope, walk: Walk) -> DrawStep {
         cx.begin_turtle(walk, Layout {
-            flow: Flow::Right,
+            flow: Flow::right(),
             spacing: 16.0,
             padding: Padding { left: 8.0, top: 4.0, right: 8.0, bottom: 4.0 },
             align: Align { x: 0.5, y: 0.5 },
@@ -102,7 +102,7 @@ impl Widget for ChartLegend {
             // Move turtle past the box and label
             // Estimate label width (rough approximation)
             let label_width = item.label.len() as f64 * 7.0;
-            cx.turtle_mut().set_pos(dvec2(
+            cx.turtle_mut().move_to(dvec2(
                 pos.x + box_size + spacing + label_width + 16.0,
                 pos.y,
             ));

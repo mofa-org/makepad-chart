@@ -1,5 +1,3 @@
-use makepad_widgets::*;
-
 /// Chart title component
 #[derive(Clone, Debug, Default)]
 pub struct ChartTitle {

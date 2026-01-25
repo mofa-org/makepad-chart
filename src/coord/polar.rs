@@ -210,7 +210,7 @@ impl ArcSegment {
         let mut angle = dy.atan2(dx);
 
         // Normalize angles for comparison
-        let mut start = self.start_angle;
+        let start = self.start_angle;
         let mut end = self.end_angle;
 
         // Handle angle wrapping
