@@ -1,5 +1,3 @@
-use makepad_widgets::*;
-
 /// Chart alignment options
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub enum ChartAlign {

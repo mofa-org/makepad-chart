@@ -9,7 +9,7 @@ keywords = ["charts", "visualization", "makepad", "gpu", "ui"]
 categories = ["visualization", "gui", "graphics"]
 
 [dependencies]
-makepad-widgets = { git = "https://github.com/makepad/makepad", branch = "main" }
+makepad-widgets = { git = "https://github.com/makepad/makepad", branch = "dev" }
 
 [features]
 default = []

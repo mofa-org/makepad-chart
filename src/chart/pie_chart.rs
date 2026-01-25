@@ -75,7 +75,6 @@ pub struct PieChart {
 struct SliceInfo {
     start_value: f64,
     end_value: f64,
-    value: f64,
     percentage: f64,
     color: Vec4,
     label: String,
@@ -215,7 +214,6 @@ impl PieChart {
             self.slices.push(SliceInfo {
                 start_value,
                 end_value,
-                value,
                 percentage,
                 color,
                 label,
@@ -369,7 +367,7 @@ impl PieChart {
         }
     }
 
-    fn handle_mouse_down(&mut self, _cx: &mut Cx, pos: DVec2) {
+    fn handle_mouse_down(&mut self, _cx: &mut Cx, _pos: DVec2) {
         if self.hovered_slice >= 0 {
             let slice = &self.slices[self.hovered_slice as usize];
             log!("Slice clicked: {} ({}%)", slice.label, (slice.percentage * 100.0).round());
