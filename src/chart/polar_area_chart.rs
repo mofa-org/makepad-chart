@@ -61,7 +61,6 @@ struct SegmentInfo {
     end_angle: f64,
     radius_ratio: f64,
     color: Vec4,
-    label: String,
 }
 
 impl Widget for PolarAreaChart {
@@ -193,18 +192,11 @@ impl PolarAreaChart {
             let end_angle = start_angle + angle_per_segment;
             let radius_ratio = point.y.max(0.0) / max_value;
 
-            let label = if i < self.data.labels.len() {
-                self.data.labels[i].clone()
-            } else {
-                format!("Segment {}", i + 1)
-            };
-
             segments.push(SegmentInfo {
                 start_angle,
                 end_angle,
                 radius_ratio,
                 color: get_color(i),
-                label,
             });
         }
 

@@ -967,7 +967,7 @@ impl MatchEvent for App {
             let target_height = (screen.y * 0.85).max(800.0).min(1200.0);
 
             // Resize the window to fit the screen
-            self.ui.window(id!(ui)).resize(cx, dvec2(target_width, target_height));
+            self.ui.window(ids!(ui)).resize(cx, dvec2(target_width, target_height));
         }
 
         self.setup_main_charts(cx);
@@ -976,124 +976,124 @@ impl MatchEvent for App {
     fn handle_actions(&mut self, cx: &mut Cx, actions: &Actions) {
         // Handle chart card hover animations on main page
         // Only trigger animation if not already animating
-        if self.ui.view(id!(bar_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(bar_chart)).borrow_mut::<BarChart>() {
+        if self.ui.view(ids!(bar_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(bar_chart)).borrow_mut::<BarChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(line_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(line_chart)).borrow_mut::<LineChart>() {
+        if self.ui.view(ids!(line_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(line_chart)).borrow_mut::<LineChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(pie_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(pie_chart)).borrow_mut::<PieChart>() {
+        if self.ui.view(ids!(pie_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(pie_chart)).borrow_mut::<PieChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(scatter_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(scatter_chart)).borrow_mut::<ScatterChart>() {
+        if self.ui.view(ids!(scatter_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(scatter_chart)).borrow_mut::<ScatterChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(radar_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(radar_chart)).borrow_mut::<RadarChart>() {
+        if self.ui.view(ids!(radar_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(radar_chart)).borrow_mut::<RadarChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(polar_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(polar_chart)).borrow_mut::<PolarAreaChart>() {
+        if self.ui.view(ids!(polar_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(polar_chart)).borrow_mut::<PolarAreaChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(bubble_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(bubble_chart)).borrow_mut::<BubbleChart>() {
+        if self.ui.view(ids!(bubble_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(bubble_chart)).borrow_mut::<BubbleChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(combo_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(combo_chart)).borrow_mut::<ComboChart>() {
+        if self.ui.view(ids!(combo_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(combo_chart)).borrow_mut::<ComboChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
-        if self.ui.view(id!(chord_card)).finger_hover_in(actions).is_some() {
-            if let Some(mut chart) = self.ui.widget(id!(chord_chart)).borrow_mut::<ChordChart>() {
+        if self.ui.view(ids!(chord_card)).finger_hover_in(actions).is_some() {
+            if let Some(mut chart) = self.ui.widget(ids!(chord_chart)).borrow_mut::<ChordChart>() {
                 if !chart.is_animating() {
                     chart.replay_animation(cx);
                 }
             }
         }
         // Handle chart card clicks
-        if self.ui.view(id!(line_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(line_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::LineDetail);
         }
-        if self.ui.view(id!(bar_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(bar_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::BarDetail);
         }
-        if self.ui.view(id!(pie_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(pie_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::PieDetail);
         }
-        if self.ui.view(id!(scatter_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(scatter_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::ScatterDetail);
         }
-        if self.ui.view(id!(radar_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(radar_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::RadarDetail);
         }
-        if self.ui.view(id!(polar_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(polar_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::PolarDetail);
         }
-        if self.ui.view(id!(bubble_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(bubble_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::BubbleDetail);
         }
-        if self.ui.view(id!(combo_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(combo_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::ComboDetail);
         }
-        if self.ui.view(id!(chord_card)).finger_up(actions).is_some() {
+        if self.ui.view(ids!(chord_card)).finger_up(actions).is_some() {
             self.navigate_to(cx, CurrentPage::ChordDetail);
         }
 
         // Handle back buttons
-        if self.ui.button(id!(back_button_line)).clicked(actions) {
+        if self.ui.button(ids!(back_button_line)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_bar)).clicked(actions) {
+        if self.ui.button(ids!(back_button_bar)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_pie)).clicked(actions) {
+        if self.ui.button(ids!(back_button_pie)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_scatter)).clicked(actions) {
+        if self.ui.button(ids!(back_button_scatter)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_radar)).clicked(actions) {
+        if self.ui.button(ids!(back_button_radar)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_polar)).clicked(actions) {
+        if self.ui.button(ids!(back_button_polar)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_bubble)).clicked(actions) {
+        if self.ui.button(ids!(back_button_bubble)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_combo)).clicked(actions) {
+        if self.ui.button(ids!(back_button_combo)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
-        if self.ui.button(id!(back_button_chord)).clicked(actions) {
+        if self.ui.button(ids!(back_button_chord)).clicked(actions) {
             self.navigate_to(cx, CurrentPage::Main);
         }
     }
@@ -1111,56 +1111,56 @@ impl App {
         self.current_page = page;
 
         // Hide all pages
-        self.ui.view(id!(main_page)).set_visible(cx, false);
-        self.ui.view(id!(line_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(bar_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(pie_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(scatter_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(radar_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(polar_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(bubble_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(combo_detail_page)).set_visible(cx, false);
-        self.ui.view(id!(chord_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(main_page)).set_visible(cx, false);
+        self.ui.view(ids!(line_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(bar_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(pie_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(scatter_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(radar_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(polar_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(bubble_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(combo_detail_page)).set_visible(cx, false);
+        self.ui.view(ids!(chord_detail_page)).set_visible(cx, false);
 
         // Show selected page and setup its charts
         match page {
             CurrentPage::Main => {
-                self.ui.view(id!(main_page)).set_visible(cx, true);
+                self.ui.view(ids!(main_page)).set_visible(cx, true);
             }
             CurrentPage::LineDetail => {
-                self.ui.view(id!(line_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(line_detail_page)).set_visible(cx, true);
                 self.setup_line_detail_charts(cx);
             }
             CurrentPage::BarDetail => {
-                self.ui.view(id!(bar_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(bar_detail_page)).set_visible(cx, true);
                 self.setup_bar_detail_charts(cx);
             }
             CurrentPage::PieDetail => {
-                self.ui.view(id!(pie_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(pie_detail_page)).set_visible(cx, true);
                 self.setup_pie_detail_charts(cx);
             }
             CurrentPage::ScatterDetail => {
-                self.ui.view(id!(scatter_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(scatter_detail_page)).set_visible(cx, true);
                 self.setup_scatter_detail_charts(cx);
             }
             CurrentPage::RadarDetail => {
-                self.ui.view(id!(radar_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(radar_detail_page)).set_visible(cx, true);
                 self.setup_radar_detail_charts(cx);
             }
             CurrentPage::PolarDetail => {
-                self.ui.view(id!(polar_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(polar_detail_page)).set_visible(cx, true);
                 self.setup_polar_detail_charts(cx);
             }
             CurrentPage::BubbleDetail => {
-                self.ui.view(id!(bubble_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(bubble_detail_page)).set_visible(cx, true);
                 self.setup_bubble_detail_charts(cx);
             }
             CurrentPage::ComboDetail => {
-                self.ui.view(id!(combo_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(combo_detail_page)).set_visible(cx, true);
                 self.setup_combo_detail_charts(cx);
             }
             CurrentPage::ChordDetail => {
-                self.ui.view(id!(chord_detail_page)).set_visible(cx, true);
+                self.ui.view(ids!(chord_detail_page)).set_visible(cx, true);
                 self.setup_chord_detail_charts(cx);
             }
         }
@@ -1178,13 +1178,13 @@ impl App {
             .add_dataset(Dataset::new("Data").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 72.0]));
 
         // Bar Chart
-        if let Some(mut chart) = self.ui.widget(id!(bar_chart)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(bar_chart)).borrow_mut::<BarChart>() {
             chart.set_data(sample_data.clone());
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
         }
 
         // Line Chart
-        if let Some(mut chart) = self.ui.widget(id!(line_chart)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(line_chart)).borrow_mut::<LineChart>() {
             chart.set_data(sample_data.clone());
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
         }
@@ -1193,7 +1193,7 @@ impl App {
         let pie_data = ChartData::new()
             .with_labels(vec!["A", "B", "C", "D", "E"])
             .add_dataset(Dataset::new("Data").with_data(vec![30.0, 25.0, 20.0, 15.0, 10.0]));
-        if let Some(mut chart) = self.ui.widget(id!(pie_chart)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(pie_chart)).borrow_mut::<PieChart>() {
             chart.set_data(pie_data);
         }
 
@@ -1202,7 +1202,7 @@ impl App {
             .add_dataset(Dataset::new("Points").with_xy_data(vec![
                 (10.0, 20.0), (20.0, 30.0), (30.0, 25.0), (40.0, 50.0), (50.0, 40.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(scatter_chart)).borrow_mut::<ScatterChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(scatter_chart)).borrow_mut::<ScatterChart>() {
             chart.set_data(scatter_data);
         }
 
@@ -1210,7 +1210,7 @@ impl App {
         let radar_data = ChartData::new()
             .with_labels(vec!["A", "B", "C", "D", "E", "F"])
             .add_dataset(Dataset::new("Data").with_data(vec![80.0, 60.0, 90.0, 70.0, 85.0, 75.0]));
-        if let Some(mut chart) = self.ui.widget(id!(radar_chart)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(radar_chart)).borrow_mut::<RadarChart>() {
             chart.set_data(radar_data);
             chart.set_fill(true);
         }
@@ -1219,7 +1219,7 @@ impl App {
         let polar_data = ChartData::new()
             .with_labels(vec!["Q1", "Q2", "Q3", "Q4"])
             .add_dataset(Dataset::new("Data").with_data(vec![120.0, 190.0, 150.0, 220.0]));
-        if let Some(mut chart) = self.ui.widget(id!(polar_chart)).borrow_mut::<PolarAreaChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(polar_chart)).borrow_mut::<PolarAreaChart>() {
             chart.set_data(polar_data);
         }
 
@@ -1228,7 +1228,7 @@ impl App {
             .add_dataset(Dataset::new("Bubbles").with_bubble_data(vec![
                 (10.0, 20.0, 15.0), (20.0, 35.0, 20.0), (35.0, 25.0, 12.0), (45.0, 40.0, 18.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(bubble_chart)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(bubble_chart)).borrow_mut::<BubbleChart>() {
             chart.set_data(bubble_data);
         }
 
@@ -1237,7 +1237,7 @@ impl App {
             .with_labels(vec!["Jan", "Feb", "Mar", "Apr", "May", "Jun"])
             .add_dataset(Dataset::new("Bars").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 72.0]))
             .add_dataset(Dataset::new("Line").with_data(vec![60.0, 62.0, 70.0, 75.0, 65.0, 70.0]));
-        if let Some(mut chart) = self.ui.widget(id!(combo_chart)).borrow_mut::<ComboChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(combo_chart)).borrow_mut::<ComboChart>() {
             chart.set_data(combo_data);
             chart.set_dataset_types(vec![DatasetType::Bar, DatasetType::Line]);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -1253,7 +1253,7 @@ impl App {
                 vec![60.0, 20.0, 40.0, 0.0, 30.0],    // Support flows to others
                 vec![30.0, 15.0, 25.0, 20.0, 0.0],    // Finance flows to others
             ]);
-        if let Some(mut chart) = self.ui.widget(id!(chord_chart)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(chord_chart)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data);
             chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
         }
@@ -1262,7 +1262,7 @@ impl App {
         let horizontal_data = ChartData::new()
             .with_labels(vec!["Jan", "Feb", "Mar", "Apr", "May", "Jun"])
             .add_dataset(Dataset::new("Sales").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 72.0]));
-        if let Some(mut chart) = self.ui.widget(id!(horizontal_bar_chart)).borrow_mut::<HorizontalBarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(horizontal_bar_chart)).borrow_mut::<HorizontalBarChart>() {
             chart.set_data(horizontal_data);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
         }
@@ -1277,7 +1277,7 @@ impl App {
                 .with_data(vec![0.0, 20.0, 20.0, 60.0, 60.0, 120.0, 80.0, 120.0, 140.0, 100.0, 70.0, 50.0]));
 
         // Basic Line
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_basic)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_basic)).borrow_mut::<LineChart>() {
             chart.set_data(data.clone());
             chart.set_tension(0.0);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -1285,7 +1285,7 @@ impl App {
         }
 
         // Cubic Interpolation (with EaseOutBounce animation - bouncy effect)
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_cubic)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_cubic)).borrow_mut::<LineChart>() {
             chart.set_data(data.clone());
             chart.set_tension(0.4);
             chart.set_cubic_interpolation_mode(CubicInterpolationMode::Default);
@@ -1296,7 +1296,7 @@ impl App {
         }
 
         // Monotone Cubic
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_monotone)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_monotone)).borrow_mut::<LineChart>() {
             chart.set_data(data.clone());
             chart.set_tension(0.4);
             chart.set_cubic_interpolation_mode(CubicInterpolationMode::Monotone);
@@ -1309,21 +1309,21 @@ impl App {
             .with_labels(vec!["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
             .add_dataset(Dataset::new("Data").with_data(vec![10.0, 15.0, 12.0, 20.0, 18.0, 25.0, 22.0]));
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_stepped_before)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_stepped_before)).borrow_mut::<LineChart>() {
             chart.set_data(stepped_data.clone());
             chart.set_stepped(SteppedMode::Before);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
             chart.replay_animation(cx); // Trigger animation for proper layout
         }
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_stepped_after)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_stepped_after)).borrow_mut::<LineChart>() {
             chart.set_data(stepped_data.clone());
             chart.set_stepped(SteppedMode::After);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
             chart.replay_animation(cx); // Trigger animation for proper layout
         }
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_stepped_middle)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_stepped_middle)).borrow_mut::<LineChart>() {
             chart.set_data(stepped_data);
             chart.set_stepped(SteppedMode::Middle);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -1331,7 +1331,7 @@ impl App {
         }
 
         // Area Fill
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_area)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_area)).borrow_mut::<LineChart>() {
             chart.set_data(data.clone());
             chart.set_fill(true);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -1345,14 +1345,14 @@ impl App {
             .add_dataset(Dataset::new("Series B").with_data(vec![40.0, 48.0, 60.0, 55.0, 45.0, 58.0]))
             .add_dataset(Dataset::new("Series C").with_data(vec![30.0, 35.0, 42.0, 38.0, 32.0, 40.0]));
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_multi)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_multi)).borrow_mut::<LineChart>() {
             chart.set_data(multi_data);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
             chart.replay_animation(cx); // Trigger animation for proper layout
         }
 
         // Smooth Area
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_smooth_area)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_smooth_area)).borrow_mut::<LineChart>() {
             chart.set_data(data);
             chart.set_tension(0.4);
             chart.set_cubic_interpolation_mode(CubicInterpolationMode::Monotone);
@@ -1400,7 +1400,7 @@ impl App {
             .add_dataset(Dataset::new("MKPD").with_data(stock_data))
             .add_dataset(Dataset::new("INDEX").with_data(stock_data3).with_color(vec4(0.4, 0.8, 0.5, 1.0)));
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_stock_market)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_stock_market)).borrow_mut::<LineChart>() {
             chart.set_data(stock_market_data);
             chart.set_tension(0.1);
             chart.set_show_points(false);
@@ -1423,7 +1423,7 @@ impl App {
             .with_labels(wave_labels.clone())
             .add_dataset(Dataset::new("Dense").with_data(dense_wave_data));
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_radio_wave_2)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_radio_wave_2)).borrow_mut::<LineChart>() {
             chart.set_data(dense_data);
             chart.set_tension(0.2);
             chart.set_show_points(false);
@@ -1447,7 +1447,7 @@ impl App {
             .with_labels(wave_labels)
             .add_dataset(Dataset::new("Audio").with_data(audio_data));
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_radio_wave_3)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_radio_wave_3)).borrow_mut::<LineChart>() {
             chart.set_data(audio_chart_data);
             chart.set_tension(0.3);
             chart.set_show_points(false);
@@ -1463,7 +1463,7 @@ impl App {
             .with_labels(vec!["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"])
             .add_dataset(Dataset::new("Data").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 72.0, 85.0, 78.0]));
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_gradient)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_gradient)).borrow_mut::<LineChart>() {
             chart.set_data(gradient_data.clone());
             chart.set_fill(true);
             chart.set_gradient(true);
@@ -1471,7 +1471,7 @@ impl App {
             chart.replay_animation(cx);
         }
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_gradient_smooth)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_gradient_smooth)).borrow_mut::<LineChart>() {
             chart.set_data(gradient_data.clone());
             chart.set_fill(true);
             chart.set_gradient(true);
@@ -1486,7 +1486,7 @@ impl App {
             .add_dataset(Dataset::new("Series A").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 72.0]))
             .add_dataset(Dataset::new("Series B").with_data(vec![40.0, 48.0, 60.0, 55.0, 45.0, 58.0]));
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_line_gradient_multi)).borrow_mut::<LineChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_line_gradient_multi)).borrow_mut::<LineChart>() {
             chart.set_data(gradient_multi_data);
             chart.set_fill(true);
             chart.set_gradient(true);
@@ -1504,7 +1504,7 @@ impl App {
             .add_dataset(Dataset::new("Data").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 72.0]));
 
         // Basic (with EaseOutBounce animation - fun bouncy effect)
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_basic)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_basic)).borrow_mut::<BarChart>() {
             chart.set_data(data.clone());
             chart.set_options(ChartOptions::new()
                 .with_begin_at_zero(true)
@@ -1513,7 +1513,7 @@ impl App {
         }
 
         // Horizontal
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_horizontal)).borrow_mut::<HorizontalBarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_horizontal)).borrow_mut::<HorizontalBarChart>() {
             chart.set_data(data.clone());
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
         }
@@ -1524,7 +1524,7 @@ impl App {
             .add_dataset(Dataset::new("A").with_data(vec![50.0, 60.0, 70.0, 80.0]))
             .add_dataset(Dataset::new("B").with_data(vec![30.0, 40.0, 35.0, 45.0]))
             .add_dataset(Dataset::new("C").with_data(vec![20.0, 25.0, 30.0, 35.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_stacked)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_stacked)).borrow_mut::<BarChart>() {
             chart.set_data(stacked_data);
             chart.set_stacked(true);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -1535,7 +1535,7 @@ impl App {
             .with_labels(vec!["Q1", "Q2", "Q3", "Q4"])
             .add_dataset(Dataset::new("2023").with_data(vec![120.0, 150.0, 180.0, 200.0]))
             .add_dataset(Dataset::new("2024").with_data(vec![140.0, 170.0, 210.0, 240.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_grouped)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_grouped)).borrow_mut::<BarChart>() {
             chart.set_data(grouped_data);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
         }
@@ -1546,7 +1546,7 @@ impl App {
             .add_dataset(Dataset::new("Range").with_floating_data(vec![
                 (-5.0, 8.0), (-3.0, 12.0), (2.0, 18.0), (8.0, 24.0), (14.0, 28.0), (18.0, 32.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_floating)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_floating)).borrow_mut::<BarChart>() {
             chart.set_data(floating_data);
             chart.set_options(ChartOptions::new().with_begin_at_zero(false));
         }
@@ -1555,13 +1555,13 @@ impl App {
         let negative_data = ChartData::new()
             .with_labels(vec!["Jan", "Feb", "Mar", "Apr", "May", "Jun"])
             .add_dataset(Dataset::new("P/L").with_data(vec![20.0, -15.0, 35.0, -25.0, 40.0, -10.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_negative)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_negative)).borrow_mut::<BarChart>() {
             chart.set_data(negative_data);
             chart.set_options(ChartOptions::new().with_begin_at_zero(false));
         }
 
         // Gradient bars
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_gradient)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_gradient)).borrow_mut::<BarChart>() {
             chart.set_data(data.clone());
             chart.set_gradient(true);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -1573,7 +1573,7 @@ impl App {
             .with_labels(vec!["Q1", "Q2", "Q3", "Q4"])
             .add_dataset(Dataset::new("2023").with_data(vec![120.0, 150.0, 180.0, 200.0]))
             .add_dataset(Dataset::new("2024").with_data(vec![140.0, 170.0, 210.0, 240.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_gradient_grouped)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_gradient_grouped)).borrow_mut::<BarChart>() {
             chart.set_data(gradient_grouped);
             chart.set_gradient(true);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -1586,7 +1586,7 @@ impl App {
             .add_dataset(Dataset::new("A").with_data(vec![50.0, 60.0, 70.0, 80.0]))
             .add_dataset(Dataset::new("B").with_data(vec![30.0, 40.0, 35.0, 45.0]))
             .add_dataset(Dataset::new("C").with_data(vec![20.0, 25.0, 30.0, 35.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bar_gradient_stacked)).borrow_mut::<BarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bar_gradient_stacked)).borrow_mut::<BarChart>() {
             chart.set_data(gradient_stacked);
             chart.set_stacked(true);
             chart.set_gradient(true);
@@ -1604,7 +1604,7 @@ impl App {
             .add_dataset(Dataset::new("Dataset 1").with_data(vec![300.0, 50.0, 100.0, 80.0, 120.0]));
 
         // Basic Pie (with EaseOutBounce animation - bouncy effect)
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_basic)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_basic)).borrow_mut::<PieChart>() {
             chart.set_data(data.clone());
             chart.set_options(ChartOptions::new()
                 .with_animation_duration(1500.0)
@@ -1612,7 +1612,7 @@ impl App {
         }
 
         // Doughnut (50% cutout - standard)
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_doughnut)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_doughnut)).borrow_mut::<PieChart>() {
             chart.set_data(data.clone());
             chart.set_doughnut(true);
             chart.set_inner_radius_ratio(0.5);
@@ -1620,7 +1620,7 @@ impl App {
         }
 
         // Doughnut (25% cutout - small hole)
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_doughnut_small)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_doughnut_small)).borrow_mut::<PieChart>() {
             chart.set_data(data.clone());
             chart.set_doughnut(true);
             chart.set_inner_radius_ratio(0.25);
@@ -1628,7 +1628,7 @@ impl App {
         }
 
         // Doughnut (75% cutout - large hole)
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_doughnut_large)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_doughnut_large)).borrow_mut::<PieChart>() {
             chart.set_data(data.clone());
             chart.set_doughnut(true);
             chart.set_inner_radius_ratio(0.75);
@@ -1639,7 +1639,7 @@ impl App {
         let unequal_data = ChartData::new()
             .with_labels(vec!["Dominant", "Small A", "Small B", "Small C", "Small D"])
             .add_dataset(Dataset::new("Data").with_data(vec![60.0, 10.0, 10.0, 10.0, 10.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_unequal)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_unequal)).borrow_mut::<PieChart>() {
             chart.set_data(unequal_data);
             chart.replay_animation(cx);
         }
@@ -1648,27 +1648,27 @@ impl App {
         let many_data = ChartData::new()
             .with_labels(vec!["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
             .add_dataset(Dataset::new("Data").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 55.0, 40.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_many)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_many)).borrow_mut::<PieChart>() {
             chart.set_data(many_data);
             chart.replay_animation(cx);
         }
 
         // Radial gradient pie
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_gradient_radial)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_gradient_radial)).borrow_mut::<PieChart>() {
             chart.set_data(data.clone());
             chart.set_radial_gradient(true);
             chart.replay_animation(cx);
         }
 
         // Angular gradient pie
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_gradient_angular)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_gradient_angular)).borrow_mut::<PieChart>() {
             chart.set_data(data.clone());
             chart.set_angular_gradient(true);
             chart.replay_animation(cx);
         }
 
         // Gradient doughnut
-        if let Some(mut chart) = self.ui.widget(id!(detail_pie_gradient_doughnut)).borrow_mut::<PieChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_pie_gradient_doughnut)).borrow_mut::<PieChart>() {
             chart.set_data(data);
             chart.set_doughnut(true);
             chart.set_inner_radius_ratio(0.5);
@@ -1686,7 +1686,7 @@ impl App {
                 (10.0, 20.0), (20.0, 35.0), (30.0, 25.0), (40.0, 50.0), (50.0, 40.0),
                 (15.0, 30.0), (25.0, 45.0), (35.0, 35.0), (45.0, 55.0), (55.0, 45.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_scatter_basic)).borrow_mut::<ScatterChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_scatter_basic)).borrow_mut::<ScatterChart>() {
             chart.set_data(scatter_data.clone());
             chart.set_options(ChartOptions::new()
                 .with_animation_duration(1500.0)
@@ -1701,7 +1701,7 @@ impl App {
             .add_dataset(Dataset::new("Series B").with_xy_data(vec![
                 (15.0, 45.0), (25.0, 35.0), (35.0, 25.0), (45.0, 15.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_scatter_multi)).borrow_mut::<ScatterChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_scatter_multi)).borrow_mut::<ScatterChart>() {
             chart.set_data(multi_scatter.clone());
             chart.replay_animation(cx);
         }
@@ -1711,20 +1711,20 @@ impl App {
             .add_dataset(Dataset::new("Bubbles").with_bubble_data(vec![
                 (10.0, 20.0, 15.0), (25.0, 40.0, 25.0), (40.0, 30.0, 20.0), (55.0, 50.0, 30.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bubble)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bubble)).borrow_mut::<BubbleChart>() {
             chart.set_data(bubble_data);
             chart.replay_animation(cx);
         }
 
         // Gradient scatter
-        if let Some(mut chart) = self.ui.widget(id!(detail_scatter_gradient)).borrow_mut::<ScatterChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_scatter_gradient)).borrow_mut::<ScatterChart>() {
             chart.set_data(scatter_data.clone());
             chart.set_gradient(true);
             chart.replay_animation(cx);
         }
 
         // Gradient multi-dataset scatter
-        if let Some(mut chart) = self.ui.widget(id!(detail_scatter_gradient_multi)).borrow_mut::<ScatterChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_scatter_gradient_multi)).borrow_mut::<ScatterChart>() {
             chart.set_data(multi_scatter.clone());
             chart.set_gradient(true);
             chart.replay_animation(cx);
@@ -1783,7 +1783,7 @@ impl App {
                 .with_xy_data(below_diagonal.clone())
                 .with_color(vec4(0.9, 0.5, 0.6, 1.0))); // Pink
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_scatter_dense)).borrow_mut::<ScatterChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_scatter_dense)).borrow_mut::<ScatterChart>() {
             chart.set_data(dense_scatter_data);
             chart.set_point_radius(3.0);
             chart.set_options(ChartOptions::new()
@@ -1846,7 +1846,7 @@ impl App {
                 .with_bubble_data(purple_bubbles)
                 .with_color(vec4(0.6, 0.25, 0.9, 0.6))); // Purple
 
-        if let Some(mut chart) = self.ui.widget(id!(detail_bubble_diagonal)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bubble_diagonal)).borrow_mut::<BubbleChart>() {
             chart.set_data(bubble_diagonal_data);
             chart.set_gradient(true);
             chart.set_options(ChartOptions::new()
@@ -1865,7 +1865,7 @@ impl App {
             .add_dataset(Dataset::new("Dataset 1").with_data(vec![65.0, 59.0, 90.0, 81.0, 56.0, 55.0]));
 
         // Basic (no fill, with EaseOutBounce animation - bouncy effect)
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_basic)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_basic)).borrow_mut::<RadarChart>() {
             chart.set_data(data_6.clone());
             chart.set_fill(false);
             chart.set_options(ChartOptions::new()
@@ -1874,7 +1874,7 @@ impl App {
         }
 
         // Filled
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_filled)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_filled)).borrow_mut::<RadarChart>() {
             chart.set_data(data_6.clone());
             chart.set_fill(true);
             chart.replay_animation(cx);
@@ -1885,7 +1885,7 @@ impl App {
             .with_labels(vec!["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling"])
             .add_dataset(Dataset::new("Dataset 1").with_data(vec![65.0, 59.0, 90.0, 81.0, 56.0, 55.0]))
             .add_dataset(Dataset::new("Dataset 2").with_data(vec![28.0, 48.0, 40.0, 19.0, 96.0, 27.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_multi_2)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_multi_2)).borrow_mut::<RadarChart>() {
             chart.set_data(multi_2);
             chart.set_fill(true);
             chart.replay_animation(cx);
@@ -1897,7 +1897,7 @@ impl App {
             .add_dataset(Dataset::new("Person A").with_data(vec![65.0, 59.0, 90.0, 81.0, 56.0, 55.0]))
             .add_dataset(Dataset::new("Person B").with_data(vec![28.0, 48.0, 40.0, 19.0, 96.0, 27.0]))
             .add_dataset(Dataset::new("Person C").with_data(vec![50.0, 70.0, 60.0, 45.0, 75.0, 80.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_multi_3)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_multi_3)).borrow_mut::<RadarChart>() {
             chart.set_data(multi_3);
             chart.set_fill(true);
             chart.replay_animation(cx);
@@ -1907,7 +1907,7 @@ impl App {
         let data_5 = ChartData::new()
             .with_labels(vec!["Speed", "Strength", "Defense", "Magic", "Luck"])
             .add_dataset(Dataset::new("Character").with_data(vec![80.0, 60.0, 90.0, 70.0, 85.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_5axis)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_5axis)).borrow_mut::<RadarChart>() {
             chart.set_data(data_5);
             chart.set_fill(true);
             chart.replay_animation(cx);
@@ -1917,14 +1917,14 @@ impl App {
         let data_8 = ChartData::new()
             .with_labels(vec!["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Holiday"])
             .add_dataset(Dataset::new("Activity").with_data(vec![65.0, 59.0, 80.0, 81.0, 56.0, 55.0, 40.0, 90.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_8axis)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_8axis)).borrow_mut::<RadarChart>() {
             chart.set_data(data_8);
             chart.set_fill(true);
             chart.replay_animation(cx);
         }
 
         // Gradient radar
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_gradient)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_gradient)).borrow_mut::<RadarChart>() {
             chart.set_data(data_6.clone());
             chart.set_fill(true);
             chart.set_gradient(true);
@@ -1936,7 +1936,7 @@ impl App {
             .with_labels(vec!["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling"])
             .add_dataset(Dataset::new("Dataset 1").with_data(vec![65.0, 59.0, 90.0, 81.0, 56.0, 55.0]))
             .add_dataset(Dataset::new("Dataset 2").with_data(vec![28.0, 48.0, 40.0, 19.0, 96.0, 27.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_radar_gradient_multi)).borrow_mut::<RadarChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_radar_gradient_multi)).borrow_mut::<RadarChart>() {
             chart.set_data(gradient_multi_radar);
             chart.set_fill(true);
             chart.set_gradient(true);
@@ -1951,7 +1951,7 @@ impl App {
         let data_6 = ChartData::new()
             .with_labels(vec!["A", "B", "C", "D", "E", "F"])
             .add_dataset(Dataset::new("Data").with_data(vec![120.0, 190.0, 150.0, 220.0, 180.0, 160.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_polar_area_basic)).borrow_mut::<PolarAreaChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_polar_area_basic)).borrow_mut::<PolarAreaChart>() {
             chart.set_data(data_6.clone());
             chart.set_options(ChartOptions::new()
                 .with_animation_duration(1500.0)
@@ -1962,7 +1962,7 @@ impl App {
         let data_4 = ChartData::new()
             .with_labels(vec!["Q1", "Q2", "Q3", "Q4"])
             .add_dataset(Dataset::new("Data").with_data(vec![120.0, 190.0, 150.0, 220.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_polar_area_4)).borrow_mut::<PolarAreaChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_polar_area_4)).borrow_mut::<PolarAreaChart>() {
             chart.set_data(data_4.clone());
             chart.replay_animation(cx);
         }
@@ -1971,20 +1971,20 @@ impl App {
         let data_8 = ChartData::new()
             .with_labels(vec!["N", "NE", "E", "SE", "S", "SW", "W", "NW"])
             .add_dataset(Dataset::new("Wind").with_data(vec![80.0, 60.0, 100.0, 70.0, 90.0, 50.0, 110.0, 75.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_polar_area_8)).borrow_mut::<PolarAreaChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_polar_area_8)).borrow_mut::<PolarAreaChart>() {
             chart.set_data(data_8);
             chart.replay_animation(cx);
         }
 
         // Gradient polar area
-        if let Some(mut chart) = self.ui.widget(id!(detail_polar_gradient)).borrow_mut::<PolarAreaChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_polar_gradient)).borrow_mut::<PolarAreaChart>() {
             chart.set_data(data_6.clone());
             chart.set_gradient(true);
             chart.replay_animation(cx);
         }
 
         // Gradient 4-segment polar area
-        if let Some(mut chart) = self.ui.widget(id!(detail_polar_gradient_4)).borrow_mut::<PolarAreaChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_polar_gradient_4)).borrow_mut::<PolarAreaChart>() {
             chart.set_data(data_4.clone());
             chart.set_gradient(true);
             chart.replay_animation(cx);
@@ -2000,7 +2000,7 @@ impl App {
                 (10.0, 20.0, 15.0), (25.0, 40.0, 20.0), (40.0, 30.0, 18.0),
                 (55.0, 50.0, 25.0), (70.0, 35.0, 12.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bubble_basic)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bubble_basic)).borrow_mut::<BubbleChart>() {
             chart.set_data(data.clone());
             chart.set_options(ChartOptions::new()
                 .with_animation_duration(1500.0)
@@ -2015,7 +2015,7 @@ impl App {
             .add_dataset(Dataset::new("Group B").with_bubble_data(vec![
                 (20.0, 35.0, 18.0), (40.0, 25.0, 22.0), (60.0, 45.0, 16.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bubble_multi)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bubble_multi)).borrow_mut::<BubbleChart>() {
             chart.set_data(multi_data.clone());
             chart.replay_animation(cx);
         }
@@ -2025,20 +2025,20 @@ impl App {
             .add_dataset(Dataset::new("Large").with_bubble_data(vec![
                 (20.0, 30.0, 35.0), (50.0, 50.0, 40.0), (80.0, 35.0, 30.0)
             ]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_bubble_large)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bubble_large)).borrow_mut::<BubbleChart>() {
             chart.set_data(large_data);
             chart.replay_animation(cx);
         }
 
         // Gradient bubbles
-        if let Some(mut chart) = self.ui.widget(id!(detail_bubble_gradient)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bubble_gradient)).borrow_mut::<BubbleChart>() {
             chart.set_data(data.clone());
             chart.set_gradient(true);
             chart.replay_animation(cx);
         }
 
         // Gradient multi-dataset bubbles
-        if let Some(mut chart) = self.ui.widget(id!(detail_bubble_gradient_multi)).borrow_mut::<BubbleChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_bubble_gradient_multi)).borrow_mut::<BubbleChart>() {
             chart.set_data(multi_data.clone());
             chart.set_gradient(true);
             chart.replay_animation(cx);
@@ -2054,7 +2054,7 @@ impl App {
             .add_dataset(Dataset::new("Trend").with_data(vec![60.0, 62.0, 70.0, 75.0, 65.0, 70.0]));
 
         // Bar + Line (with EaseOutBounce animation - bouncy effect)
-        if let Some(mut chart) = self.ui.widget(id!(detail_combo_bar_line)).borrow_mut::<ComboChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_combo_bar_line)).borrow_mut::<ComboChart>() {
             chart.set_data(data.clone());
             chart.set_dataset_types(vec![DatasetType::Bar, DatasetType::Line]);
             chart.set_options(ChartOptions::new()
@@ -2064,7 +2064,7 @@ impl App {
         }
 
         // Line + Bar
-        if let Some(mut chart) = self.ui.widget(id!(detail_combo_line_bar)).borrow_mut::<ComboChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_combo_line_bar)).borrow_mut::<ComboChart>() {
             chart.set_data(data.clone());
             chart.set_dataset_types(vec![DatasetType::Line, DatasetType::Bar]);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -2077,7 +2077,7 @@ impl App {
             .add_dataset(Dataset::new("A").with_data(vec![40.0, 35.0, 50.0, 45.0, 35.0, 45.0]))
             .add_dataset(Dataset::new("B").with_data(vec![25.0, 24.0, 30.0, 36.0, 21.0, 27.0]))
             .add_dataset(Dataset::new("Avg").with_data(vec![60.0, 62.0, 70.0, 75.0, 65.0, 70.0]));
-        if let Some(mut chart) = self.ui.widget(id!(detail_combo_stacked)).borrow_mut::<ComboChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_combo_stacked)).borrow_mut::<ComboChart>() {
             chart.set_data(stacked_combo);
             chart.set_dataset_types(vec![DatasetType::Bar, DatasetType::Bar, DatasetType::Line]);
             chart.set_options(ChartOptions::new().with_begin_at_zero(true));
@@ -2085,7 +2085,7 @@ impl App {
         }
 
         // Gradient combo
-        if let Some(mut chart) = self.ui.widget(id!(detail_combo_gradient)).borrow_mut::<ComboChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_combo_gradient)).borrow_mut::<ComboChart>() {
             chart.set_data(data.clone());
             chart.set_dataset_types(vec![DatasetType::Bar, DatasetType::Line]);
             chart.set_gradient(true);
@@ -2109,14 +2109,14 @@ impl App {
             ]);
 
         // Basic Chord
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_basic)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_basic)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
             chart.replay_animation(cx);
         }
 
         // Gradient Ribbons
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_gradient)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_gradient)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_gradient(true);
             chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
@@ -2124,7 +2124,7 @@ impl App {
         }
 
         // Directed (Arrows)
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_directed)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_directed)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_directed(true);
             chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
@@ -2132,7 +2132,7 @@ impl App {
         }
 
         // Arc Gradient
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_arc_gradient)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_arc_gradient)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_arc_gradient(true);
             chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
@@ -2140,7 +2140,7 @@ impl App {
         }
 
         // Directed + Gradient (Full effects)
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_directed_gradient)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_directed_gradient)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_directed(true);
             chart.set_gradient(true);
@@ -2150,7 +2150,7 @@ impl App {
         }
 
         // Thin Arcs
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_thin_arcs)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_thin_arcs)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_arc_thickness(0.03);
             chart.set_gradient(true);
@@ -2159,7 +2159,7 @@ impl App {
         }
 
         // Wide Gap
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_wide_gap)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_wide_gap)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_gap_angle(0.12);
             chart.set_options(ChartOptions::new().with_animation_duration(1000.0));
@@ -2167,7 +2167,7 @@ impl App {
         }
 
         // Bounce Animation
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_bounce)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_bounce)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_gradient(true);
             chart.set_options(ChartOptions::new()
@@ -2177,7 +2177,7 @@ impl App {
         }
 
         // Elastic Animation
-        if let Some(mut chart) = self.ui.widget(id!(detail_chord_elastic)).borrow_mut::<ChordChart>() {
+        if let Some(mut chart) = self.ui.widget(ids!(detail_chord_elastic)).borrow_mut::<ChordChart>() {
             chart.set_data(chord_data.clone());
             chart.set_directed(true);
             chart.set_gradient(true);
